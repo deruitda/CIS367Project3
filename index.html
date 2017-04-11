@@ -11,17 +11,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ThreeJS Project</title>
-    <meta name="description" content="">
-    <!-- This assumes your project will be responsive -->
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="http://www.cis.gvsu.edu/~dulimarh/styles/handout.css">
-    <style>
-        body {
-            margin: 4px;
-            overflow: auto;
-        }
-    </style>
 </head>
 <body>
 <!--[if lt IE 10]>
@@ -30,80 +19,6 @@
 <![endif]-->
 <script data-main="js/main" src="js/vendor/require.js"></script>
 
-<h1>Hierarchical Models, Animations, and Texture</h1>
-<h3>Hierarchical Model</h3>
-The bike is built from two components: <code>BikeFrame</code> and <code>Wheel</code> (found under the
-<code>models</code> subdirectory).
-<ul>
-    <li>The <code>BikeFrame</code> creates three cylinders and place them in a THREE.Group. </li>
-    <li>Using a similar technique, the <code>Wheel</code> creates a red Torus and five blue cylinders</li>
-</ul>
-At lines 67-70 of <code>main.js</code> the two groups are organized into a <i>hierarchical model</i>, where
-the <code>BikeFrame</code> is the root of the chain.
-<pre class="cppcode">
-wheelOne = new Wheel();
-bikeFrame = new BikeFrame();
-bikeFrame.add (wheelOne);     // bikeFrame is the "root", wheelOne is a child of bikeFrame
-
-scene.add(bikeFrame);         // the "root" object is added to the scene
-</pre>
-
-<h3>Animation Control</h3>
-To control the animation the program uses two coordinate frames which are updated inside the keyboard
-handler (<code>main.js</code> lines 148-165):
-<ul>
-    <li><code>frameCF</code>: controls the pose of the bike frame</li>
-    <li><code>wheelCF</code>: controls the rotation angle of the wheel. To match the wheel rotation
-        with the bike linear motion, the wheel rotation angle is also calculated when handling
-        the 'i' and 'k'iii keys.</li>
-</ul>
-
-When the <code>animate()</code> function refreshes the screen, it
-automatically picks up the updated
-coordinate frames. To render the bikeFrame and wheel using the updated coordinate frames, we
-first extract the translation, rotation, and scale components from each coordinate frame (using
-<code>decompose()</code> and then copy these vectors and quaternion to each corresponding object (lines 94-102):
-
-<pre class="cppcode">
-frameCF.decompose (tmpTranslation, tmpRotation, tmpScale);
-bikeFrame.position.copy (tmpTranslation);
-bikeFrame.quaternion.copy (tmpRotation);
-bikeFrame.scale.copy (tmpScale);
-
-wheelCF.decompose (tmpTranslation, tmpRotation, tmpScale);
-wheelOne.position.copy (tmpTranslation);
-wheelOne.quaternion.copy (tmpRotation);
-wheelOne.scale.copy (tmpScale);
-</pre>
-
-<h3>Texture</h3>
-The ground is simply a huge plane rendered using a gravel texture (lines 78-85).
-
-<pre class="cppcode">
-const gravelTex = new THREE.TextureLoader().load("textures/gravel.png");
-gravelTex.repeat.set(6,6);     // repeat the texture 6x in both s- and t- directions
-gravelTex.wrapS = THREE.RepeatWrapping;
-gravelTex.wrapT = THREE.RepeatWrapping;
-const ground = new THREE.Mesh (
-    new THREE.PlaneGeometry(2500, 2500, 10, 10),
-    new THREE.MeshPhongMaterial({ map: gravelTex})
-);
-</pre>
-
-Texture Image credit: <a href="http://www.blendernation.com">BlenderNation</a>.
-
-<h2>Demo</h2>
-<p>
-    Keys (you may have to click the mouse on the canvas to set its keyboard focus)
-<ul>
-    <li>Bike control: i, j, k, l</li>
-    <li>Camera control:
-        <ul>
-            <li>shift+up/shift+down: move the camera along its optical axis</li>
-            <li>shift+left/shift+right: pan the camera around its vertical</li>
-        </ul>
-    </li>
-</ul>
 
 </body>
 </html>

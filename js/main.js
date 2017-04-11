@@ -6,14 +6,25 @@ require({
     //     '/bower_components/threex.windowresize/threex.windowresize': { exports: 'THREEx' }
     // }
 }, [
-    'vendor/three', 'models/Wheel', 'models/BikeFrame', 'models/Walls'
-], function(THREE, Wheel, BikeFrame, Walls) {
+    'vendor/three', 'models/Wheel', 'models/BikeFrame', 'models/Walls', 'vendor/FirstPersonControls'
+], function(THREE, Wheel, BikeFrame, Walls, FPSControls) {
 
     var scene, camera, renderer;
     var geometry, material, mesh;
     var wheelOne, wheelCF, tmpTranslation, tmpRotation, tmpScale;
     var bikeFrame, frameCF;
     var testWall, wallCF;
+    var clock, controls;
+    var WIDTH = window.innerWidth,
+        HEIGHT = window.innerHeight,
+        ASPECT = WIDTH / HEIGHT,
+        UNITSIZE = 250,
+        WALLHEIGHT = UNITSIZE / 3,
+        MOVESPEED = 100,
+        LOOKSPEED = 0.075,
+        BULLETMOVESPEED = MOVESPEED * 5,
+        NUMAI = 5,
+        PROJECTILEDAMAGE = 20;
 
 
     const rotZ1 = new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(1));
@@ -25,22 +36,21 @@ require({
     function init() {
 
         scene = new THREE.Scene();
-
+        clock = new THREE.Clock();
         window.addEventListener('resize', onResize, false);
-        window.addEventListener('keydown', onKeypress, false);
+        //window.addEventListener('keydown', onKeypress, false);
         const globalAxes = new THREE.AxisHelper(200);
         scene.add(globalAxes);
-        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
 
-        const eyePos = new THREE.Vector3 (1000, 300, 400);
-        const cameraPose = new THREE.Matrix4().lookAt (
-            eyePos,
-            new THREE.Vector3 (0, 0, 200),
-            new THREE.Vector3 (0, 0, 1)
-        );
-        cameraPose.setPosition (eyePos);
-        camera.matrixAutoUpdate = false;
-        camera.matrixWorld.copy (cameraPose);
+        camera = new THREE.PerspectiveCamera(60, ASPECT, 1, 10000); // FOV, aspect, near, far
+        camera.position.y = UNITSIZE * .2;
+        scene.add(camera);
+
+        controls = new FPSControls(camera);
+        controls.movementSpeed = MOVESPEED;
+        controls.lookSpeed = LOOKSPEED;
+        //controls.lookVertical = false; // Temporary solution; play on flat surfaces only
+        controls.noFly = true;
 
         const lightOne = new THREE.DirectionalLight(0xFFFFFF, 1.2);
         lightOne.position.set(200, 40, 400);
@@ -108,69 +118,20 @@ require({
         wheelOne.quaternion.copy (tmpRotation);
         wheelOne.scale.copy (tmpScale);
 
+        var delta = clock.getDelta(), speed = delta * BULLETMOVESPEED;
+        var aispeed = delta * MOVESPEED;
+        controls.update(delta); // Move camera
+
         renderer.render( scene, camera );
     }
 
     function onResize() {
         const height = window.innerHeight - 100;
         const width = window.innerWidth - 8;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+        //camera.aspect = width / height;
+        //camera.updateProjectionMatrix();
 
         renderer.setSize (width, height);
-    }
-
-    const moveZpos = new THREE.Matrix4().makeTranslation (0, 0, 50);
-    const moveZneg = new THREE.Matrix4().makeTranslation (0, 0, -50);
-    const rotYpos = new THREE.Matrix4().makeRotationY (THREE.Math.degToRad(5));
-    const rotYneg = new THREE.Matrix4().makeRotationY (THREE.Math.degToRad(-5));
-
-    function onKeypress(event) {
-        const key = event.keyCode || event.charCode;
-        switch (key) {
-            case 37: {// left arrow
-                camera.matrixAutoUpdate = false;
-                camera.matrixWorld.multiply(rotYpos);
-                scene.updateMatrixWorld(true);
-                break;
-            }
-            case 38: {// up arrow
-                camera.matrixAutoUpdate = false;
-                camera.matrixWorld.multiply(moveZneg);
-                scene.updateMatrixWorld(true);
-                break;
-            }
-            case 39: { // right arrow
-                camera.matrixAutoUpdate = false;
-                camera.matrixWorld.multiply(rotYneg);
-                scene.updateMatrixWorld(true);
-                break;
-            }
-            case 40: { // down arrow
-                camera.matrixAutoUpdate = false;
-                camera.matrixWorld.multiply(moveZpos);
-                scene.updateMatrixWorld(true);
-                break;
-            }
-            case 73: { /* i */
-                frameCF.multiply(moveZpos);
-                /* travel distance: 50, wheel radius 158 */
-                const angle = 50 / 150;
-                wheelCF.multiply (new THREE.Matrix4().makeRotationZ (angle));
-                break;
-            }
-            case 74:  /* j */
-                frameCF.multiply(rotYpos);
-                break;
-            case 75:  /* k */
-                frameCF.multiply(moveZneg);
-                const angle = 50 / 158;
-                wheelCF.multiply (new THREE.Matrix4().makeRotationZ (-angle));
-                break;
-            case 76:  /* j */
-                frameCF.multiply(rotYneg);
-                break;
-        }
     }
 
 });
