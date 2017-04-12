@@ -20,7 +20,7 @@ require({
         ASPECT = WIDTH / HEIGHT,
         UNITSIZE = 250,
         WALLHEIGHT = UNITSIZE / 3,
-        MOVESPEED = 100,
+        MOVESPEED = 300,
         LOOKSPEED = 0.075,
         BULLETMOVESPEED = MOVESPEED * 5,
         NUMAI = 5,
@@ -43,7 +43,8 @@ require({
         scene.add(globalAxes);
 
         camera = new THREE.PerspectiveCamera(60, ASPECT, 1, 10000); // FOV, aspect, near, far
-        camera.position.y = UNITSIZE * .2;
+        camera.position.y = 100;
+        camera.position.x = UNITSIZE * 5;
         scene.add(camera);
 
         controls = new FPSControls(camera);
@@ -53,8 +54,12 @@ require({
         controls.noFly = true;
 
         const lightOne = new THREE.DirectionalLight(0xFFFFFF, 1.2);
-        lightOne.position.set(200, 40, 400);
+        lightOne.position.set(100, 40, 400);
         scene.add(lightOne);
+
+        const lightTwo = new THREE.DirectionalLight(0xFFFFFF, 1.2);
+        lightTwo.position.set(300, 80, 400);
+        scene.add(lightTwo);
         // const lightOneHelper = new THREE.DirectionalLightHelper(lightOne, 100);
         // scene.add(lightOneHelper);
         geometry = new THREE.BoxGeometry( 200, 200, 200 );
@@ -87,6 +92,7 @@ require({
 
         testWall = new Walls();
         scene.add(testWall);
+        testWall.rotateX(-(Math.PI/2));
 
         var container = document.getElementById("container");
         renderer = new THREE.WebGLRenderer();
@@ -97,10 +103,12 @@ require({
         gravelTex.wrapS = THREE.RepeatWrapping;
         gravelTex.wrapT = THREE.RepeatWrapping;
         const ground = new THREE.Mesh (
-            new THREE.PlaneGeometry(2500, 2500, 10, 10),
+            new THREE.PlaneGeometry(5500, 5500, 10, 10),
             new THREE.MeshPhongMaterial({ map: gravelTex})
         );
         scene.add(ground);
+        ground.position = new THREE.Vector3(40,0,0);
+        ground.rotation.x = -(Math.PI / 2);
         document.body.appendChild( renderer.domElement );
     }
 
