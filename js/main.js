@@ -6,15 +6,17 @@ require({
     //     '/bower_components/threex.windowresize/threex.windowresize': { exports: 'THREEx' }
     // }
 }, [
-    'vendor/three', 'models/Wheel', 'models/BikeFrame', 'models/Walls', 'vendor/FirstPersonControls'
-], function(THREE, Wheel, BikeFrame, Walls, FPSControls) {
+    'vendor/three', 'models/Wheel', 'models/Target', 'models/Walls', 'vendor/FirstPersonControls'
+], function(THREE, Wheel, Target, Walls, FPSControls) {
 
-    var scene, camera, renderer;
+    var scene, camera, renderer, projector;
     var geometry, material, mesh;
     var wheelOne, wheelCF, tmpTranslation, tmpRotation, tmpScale;
-    var bikeFrame, frameCF;
+    var target, TargetCF;
     var testWall, wallCF;
     var clock, controls;
+    var bullets;
+    var targets;
     var WIDTH = window.innerWidth,
         HEIGHT = window.innerHeight,
         ASPECT = WIDTH / HEIGHT,
@@ -25,6 +27,7 @@ require({
         BULLETMOVESPEED = MOVESPEED * 5,
         NUMAI = 5,
         PROJECTILEDAMAGE = 20;
+    var mouse = { x: 0, y: 0 };
 
 
     const rotZ1 = new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(1));
@@ -34,10 +37,12 @@ require({
 
 
     function init() {
-
+        projector = new THREE.Projector();
         scene = new THREE.Scene();
         clock = new THREE.Clock();
+        bullets  = [];
         window.addEventListener('resize', onResize, false);
+        document.addEventListener( 'mousemove', onDocumentMouseMove, false );
         //window.addEventListener('keydown', onKeypress, false);
         const globalAxes = new THREE.AxisHelper(200);
         scene.add(globalAxes);
@@ -51,7 +56,7 @@ require({
         controls.movementSpeed = MOVESPEED;
         controls.lookSpeed = LOOKSPEED;
         //controls.lookVertical = false; // Temporary solution; play on flat surfaces only
-        controls.noFly = true;
+        controls.noFly = false;
 
         const lightOne = new THREE.DirectionalLight(0xFFFFFF, 1.2);
         lightOne.position.set(100, 40, 400);
@@ -84,14 +89,16 @@ require({
         tmpTranslation = new THREE.Vector3();
         tmpScale = new THREE.Vector3();
         wheelOne = new Wheel();
-        bikeFrame = new BikeFrame();
+        const targetGeo = new THREE.CylinderGeometry(50, 50, 10, 50);
+        const targetMat = new THREE.MeshPhongMaterial ({color: 0xff0000});
+        target = new THREE.Mesh(targetGeo, targetMat);
+        targets = [];
+        targets.push(target);
 
-        bikeFrame.add (wheelOne);
-
-        scene.add(bikeFrame);
+        scene.add(target);
 
         testWall = new Walls();
-        scene.add(testWall);
+        //scene.add(testWall);
         testWall.rotateX(-(Math.PI/2));
 
         var container = document.getElementById("container");
@@ -109,28 +116,19 @@ require({
         scene.add(ground);
         ground.position = new THREE.Vector3(40,0,0);
         ground.rotation.x = -(Math.PI / 2);
+        $(document).click(function(e) {
+            e.preventDefault;
+            if (e.which === 1) { // Left click only
+                createBullet();
+            }
+        });
         document.body.appendChild( renderer.domElement );
     }
 
     function animate() {
 
         requestAnimationFrame( animate );
-
-        frameCF.decompose (tmpTranslation, tmpRotation, tmpScale);
-        bikeFrame.position.copy (tmpTranslation);
-        bikeFrame.quaternion.copy (tmpRotation);
-        bikeFrame.scale.copy (tmpScale);
-
-        wheelCF.decompose (tmpTranslation, tmpRotation, tmpScale);
-        wheelOne.position.copy (tmpTranslation);
-        wheelOne.quaternion.copy (tmpRotation);
-        wheelOne.scale.copy (tmpScale);
-
-        var delta = clock.getDelta(), speed = delta * BULLETMOVESPEED;
-        var aispeed = delta * MOVESPEED;
-        controls.update(delta); // Move camera
-
-        renderer.render( scene, camera );
+        render();
     }
 
     function onResize() {
@@ -141,5 +139,83 @@ require({
 
         renderer.setSize (width, height);
     }
+
+    var sphereMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
+    var sphereGeo = new THREE.SphereGeometry(1, 1, 1);
+    function createBullet(obj) {
+        if (obj === undefined) {
+            obj = camera;
+        }
+        var sphere = new THREE.Mesh(sphereGeo, sphereMaterial);
+        sphere.position.set(obj.position.x, obj.position.y * 0.8, obj.position.z);
+
+        if (obj instanceof THREE.Camera) {
+            var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+            projector.unprojectVector(vector, obj);
+            sphere.ray = new THREE.Ray(
+                obj.position,
+                vector.subSelf(obj.position).normalize()
+            );
+        }
+        else {
+            var vector = camera.position.clone();
+            sphere.ray = new THREE.Ray(
+                obj.position,
+                vector.subSelf(obj.position).normalize()
+            );
+        }
+        sphere.owner = obj;
+
+        bullets.push(sphere);
+        scene.add(sphere);
+
+        return sphere;
+    }
+
+    function onDocumentMouseMove(e) {
+        e.preventDefault();
+        mouse.x = (e.clientX / WIDTH) * 2 - 1;
+        mouse.y = - (e.clientY / HEIGHT) * 2 + 1;
+    }
+
+
+    // Update and display
+    function render() {
+        var delta = clock.getDelta(), speed = delta * BULLETMOVESPEED;
+        controls.update(delta); // Move camera
+
+        // Update bullets. Walk backwards through the list so we can remove items.
+        if(bullets.length != undefined){
+            for (var i = bullets.length-1; i >= 0; i--) {
+                var b = bullets[i], bulletPos = b.position, bulletDir = b.ray.direction;
+                //if()
+
+                var hit = false;
+                //for (var j = ai.length-1; j >= 0; j--) {
+                if(targets[0]) {
+                    var target = targets[0];
+                    var ray = new THREE.Raycaster(bulletPos, bulletDir.clone().normalize());
+                    var colResults = ray.intersectObject(target);
+                    if(colResults.length > 0 && colResults[0].distance < bulletDir.length){
+                        scene.remove(b);
+                        hit = true;
+                    }
+                    if (hit) {
+                        scene.remove(target);
+                        window.alert("FUCK!!!");
+                    }
+                    //}
+                    if (!hit) {
+                        b.translateX(speed * bulletDir.x);
+                        b.translateZ(speed * bulletDir.z);
+                        b.translateY(speed * bulletDir.y);
+                    }
+                }
+            }
+        }
+
+        renderer.render(scene, camera); // Repaint
+    }
+
 
 });

@@ -2600,6 +2600,11 @@
             return this;
 
         },
+        subSelf:function(a) {
+            this.x=this.x-a.x;
+            this.y=this.y-a.y;
+            return this;
+        },
 
         setScalar: function ( scalar ) {
 
