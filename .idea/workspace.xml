@@ -39,8 +39,8 @@
           <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/main.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="640">
-                  <caret line="204" column="48" lean-forward="false" selection-start-line="204" selection-start-column="48" selection-end-line="204" selection-end-column="48" />
+                <state relative-caret-position="440">
+                  <caret line="207" column="35" lean-forward="false" selection-start-line="207" selection-start-column="35" selection-end-line="207" selection-end-column="35" />
                   <folding />
                 </state>
               </provider>
@@ -353,12 +353,12 @@
       <workItem from="1492029467414" duration="304000" />
       <workItem from="1492030113065" duration="175000" />
       <workItem from="1492451841826" duration="10932000" />
-      <workItem from="1492532450034" duration="8692000" />
+      <workItem from="1492532450034" duration="11354000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41732000" />
+    <option name="totallyTimeSpent" value="44394000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -753,6 +753,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js/models/Walls.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="664">
+          <caret line="39" column="51" lean-forward="false" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="460">
@@ -765,18 +773,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/models/Walls.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="664">
-          <caret line="39" column="51" lean-forward="false" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="204" column="48" lean-forward="false" selection-start-line="204" selection-start-column="48" selection-end-line="204" selection-end-column="48" />
+        <state relative-caret-position="440">
+          <caret line="207" column="35" lean-forward="false" selection-start-line="207" selection-start-column="35" selection-end-line="207" selection-end-column="35" />
           <folding />
         </state>
       </provider>

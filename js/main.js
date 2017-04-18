@@ -201,12 +201,23 @@ require({
         for(var i = 0; i < numTargets; i++){
             var target = new Target();
 
-            target.position.x = positions[i].x;
-            target.position.z = positions[i].z - UNITSIZE;
+            var min = 0;
+            var max = positions.length;
+            var randPos = Math.floor(Math.random() * (max - min)) + min;
+            var position = positions[randPos];
+            if(Math.abs(position.y) > Math.abs(position.x)){
+                target.position.x = position.x;
+                target.position.z = -position.y + UNITSIZE;
+            }
+            else{
+                target.position.x = position.x;
+                target.position.z = -position.y - UNITSIZE;
+            }
             target.position.y = 100;
             target.rotateX(Math.PI/2);
             scene.add(target);
             targets.push(target);
+            positions.splice(randPos, 1);
         }
     }
 
@@ -217,6 +228,7 @@ require({
 
         // Update bullets. Walk backwards through the list so we can remove items.
         if(bullets.length != undefined){
+            console.log(camera.position);
             for (var i = bullets.length-1; i >= 0; i--) {
                 var bullet = bullets[i];
                 var bulletPos = bullet.position;
