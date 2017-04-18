@@ -96,7 +96,14 @@ require({
         testWall.rotateX(-(Math.PI/2));
 
         targets = [];
-        createTargets();
+        const targetGeo = new THREE.CylinderGeometry(50, 50, 10, 50);
+        const targetMat = new THREE.MeshPhongMaterial ({color: 0xff0000});
+        target = new THREE.Mesh(targetGeo, targetMat);
+        target.translateY(100);
+        target.rotateX(Math.PI/2);
+        scene.add(target);
+        targets.push(target);
+        //createTargets();
 
         var container = document.getElementById("container");
         renderer = new THREE.WebGLRenderer();
@@ -184,18 +191,18 @@ require({
 
 
     function createTargets(){
-        var numTargets = 20;
-        for(var row = 0; row < map.length; row++){
-
-        }
-        for(var i = 0; i < numTargets; i++){
-            const targetGeo = new THREE.CylinderGeometry(50, 50, 10, 50);
-            const targetMat = new THREE.MeshPhongMaterial ({color: 0xff0000});
-            target = new THREE.Mesh(targetGeo, targetMat);
-
-            target.rotateX(Math.PI/2);
-            targets.push(target);
-        }
+        // var numTargets = 20;
+        // for(var row = 0; row < map.length; row++){
+        //
+        // }
+        // for(var i = 0; i < numTargets; i++){
+        //     const targetGeo = new THREE.CylinderGeometry(50, 50, 10, 50);
+        //     const targetMat = new THREE.MeshPhongMaterial ({color: 0xff0000});
+        //     target = new THREE.Mesh(targetGeo, targetMat);
+        //
+        //     target.rotateX(Math.PI/2);
+        //     targets.push(target);
+        // }
     }
 
     // Update and display
@@ -207,28 +214,36 @@ require({
         if(bullets.length != undefined){
             for (var i = bullets.length-1; i >= 0; i--) {
                 var bullet = bullets[i];
+                var bulletPos = bullet.position;
                 var dir = bullet.ray.direction;
                 var hit = false;
                 var originPoint = bullet.position.clone();
-                if(checkWallCollision(bullet.position)){
-                    bullets.splice(i, 1);
-                    scene.remove(bullet);
-                    continue;
+                var targetPos = target.position;
+                if((bulletPos.x < targetPos.x + 50 && bulletPos.x > targetPos.x - 50) &&
+                    (bulletPos.y < targetPos.y + 50 && bulletPos.y > targetPos.y - 50) &&
+                    (bulletPos.z < targetPos.z + 50 && bulletPos.y > targetPos.y - 50))
+                {
+                    hit = true;
                 }
-                for(var vertexIndex = 0; vertexIndex < bullet.geometry.vertices.length; vertexIndex++){
-                    var localVertex = bullet.geometry.vertices[vertexIndex].clone();
-                    var globalVertex = localVertex.applyMatrix4(bullet.matrix);
-                    var directionVector = globalVertex.sub(bullet.position);
+                // if(checkWallCollision(bullet.position)){
+                //     bullets.splice(i, 1);
+                //     scene.remove(bullet);
+                //     continue;
+                // }
 
-                    var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-                    var collisionResults = ray.intersectObjects(targets);
-                    if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length)
-                        hit = true;
-                }
+                // for(var vertexIndex = 0; vertexIndex < bullet.geometry.vertices.length; vertexIndex++){
+                //     var localVertex = bullet.geometry.vertices[vertexIndex].clone();
+                //     var globalVertex = localVertex.applyMatrix4(bullet.matrix);
+                //     var directionVector = globalVertex.sub(bullet.position);
+                //
+                //     var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+                //     var collisionResults = ray.intersectObjects(targets);
+                //     if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length)
+                //         hit = true;
+                // }
 
                 if (hit) {
                    scene.remove(target);
-                   window.alert("FUCK!!!");
                 }
                 if (!hit) {
                     bullet.translateX(speed * dir.x);

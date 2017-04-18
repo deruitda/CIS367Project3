@@ -20,7 +20,7 @@ define(function(require){
             this.domElement = ( domElement !== undefined ) ? domElement : document;
 
             this.movementSpeed = 1.0;
-            this.lookSpeed = 0.005;
+            this.lookSpeed = 1.0;
 
             this.noFly = false;
             this.lookVertical = true;
