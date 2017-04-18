@@ -1,7 +1,6 @@
 var scene, camera, renderer, projector;
 var geometry, material, mesh;
 var wheelOne, wheelCF, tmpTranslation, tmpRotation, tmpScale;
-var target, TargetCF;
 var testWall, wallCF;
 var clock, controls;
 var bullets;
@@ -13,7 +12,7 @@ var WIDTH = window.innerWidth,
     WALLHEIGHT = UNITSIZE / 3,
     MOVESPEED = 300,
     LOOKSPEED = 0.075,
-    BULLETMOVESPEED = MOVESPEED * 5,
+    BULLETMOVESPEED = 1000,
     NUMAI = 5,
     PROJECTILEDAMAGE = 20,
     map;
@@ -51,6 +50,11 @@ require({
         camera.position.y = 100;
         camera.position.x = UNITSIZE * 5;
         scene.add(camera);
+
+        // var objLoader = new THREE.ObjectLoader();
+        // objLoader.load('Textures/desert_eagle.json', function(object){
+        //    scene.add(object);
+        // });
 
         controls = new FPSControls(camera);
         controls.movementSpeed = MOVESPEED;
@@ -96,14 +100,8 @@ require({
         testWall.rotateX(-(Math.PI/2));
 
         targets = [];
-        const targetGeo = new THREE.CylinderGeometry(50, 50, 10, 50);
-        const targetMat = new THREE.MeshPhongMaterial ({color: 0xff0000});
-        target = new THREE.Mesh(targetGeo, targetMat);
-        target.translateY(100);
-        target.rotateX(Math.PI/2);
-        scene.add(target);
-        targets.push(target);
-        //createTargets();
+
+        createTargets();
 
         var container = document.getElementById("container");
         renderer = new THREE.WebGLRenderer();
@@ -191,18 +189,31 @@ require({
 
 
     function createTargets(){
-        // var numTargets = 20;
-        // for(var row = 0; row < map.length; row++){
-        //
-        // }
-        // for(var i = 0; i < numTargets; i++){
-        //     const targetGeo = new THREE.CylinderGeometry(50, 50, 10, 50);
-        //     const targetMat = new THREE.MeshPhongMaterial ({color: 0xff0000});
-        //     target = new THREE.Mesh(targetGeo, targetMat);
-        //
-        //     target.rotateX(Math.PI/2);
-        //     targets.push(target);
-        // }
+        var numTargets = 15;
+        var positions = [];
+        for(var i = 0; i < numTargets; i++){
+            var min = 0;
+            var max = testWall.walls.length-1;
+            var randWall = Math.floor(Math.random() * (max - min)) + min;
+            var wall = testWall.walls[randWall];
+            positions.push(wall.position);
+        }
+        for(var i = 0; i < numTargets; i++){
+            var target = new Target();
+
+            var XZmin = 100;
+            var XZMax = 5000;
+            var Ymin = 50;
+            var Ymax = 100;
+            // var x = Math.floor(Math.random() * (XZMax - XZmin)) + XZmin;
+            // var z = Math.floor(Math.random() * (XZMax - XZmin)) + XZmin;
+            // var y = Math.floor(Math.random() * (Ymax - Ymin)) + Ymin;
+            target.position.set(positions[i].x, positions[i].y, positions[i].z);
+            target.position.y = 100;
+            target.rotateX(Math.PI/2);
+            scene.add(target);
+            targets.push(target);
+        }
     }
 
     // Update and display
@@ -217,39 +228,28 @@ require({
                 var bulletPos = bullet.position;
                 var dir = bullet.ray.direction;
                 var hit = false;
-                var originPoint = bullet.position.clone();
-                var targetPos = target.position;
-                if((bulletPos.x < targetPos.x + 50 && bulletPos.x > targetPos.x - 50) &&
-                    (bulletPos.y < targetPos.y + 50 && bulletPos.y > targetPos.y - 50) &&
-                    (bulletPos.z < targetPos.z + 50 && bulletPos.y > targetPos.y - 50))
-                {
-                    hit = true;
+                for(var t = 0; t < targets.length; t++) {
+                    var target = targets[t];
+                    var targetPos = target.position;
+                    if ((bulletPos.x < targetPos.x + 50 && bulletPos.x > targetPos.x - 50) &&
+                        (bulletPos.y < targetPos.y + 50 && bulletPos.y > targetPos.y - 50) &&
+                        (bulletPos.z < targetPos.z + 50 && bulletPos.z > targetPos.z - 50)) {
+                        hit = true;
+                    }
+                    if (hit) {
+                        scene.remove(target);
+                        targets.splice(t, 1);
+                        bullets.splice(i, 1);
+                        scene.remove(bullet);
+                        break;
+                    }
                 }
-                // if(checkWallCollision(bullet.position)){
-                //     bullets.splice(i, 1);
-                //     scene.remove(bullet);
-                //     continue;
-                // }
+                    if (!hit) {
+                        bullet.translateX(speed * dir.x);
+                        bullet.translateZ(speed * dir.z);
+                        bullet.translateY(speed * dir.y);
+                    }
 
-                // for(var vertexIndex = 0; vertexIndex < bullet.geometry.vertices.length; vertexIndex++){
-                //     var localVertex = bullet.geometry.vertices[vertexIndex].clone();
-                //     var globalVertex = localVertex.applyMatrix4(bullet.matrix);
-                //     var directionVector = globalVertex.sub(bullet.position);
-                //
-                //     var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-                //     var collisionResults = ray.intersectObjects(targets);
-                //     if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length)
-                //         hit = true;
-                // }
-
-                if (hit) {
-                   scene.remove(target);
-                }
-                if (!hit) {
-                    bullet.translateX(speed * dir.x);
-                    bullet.translateZ(speed * dir.z);
-                    bullet.translateY(speed * dir.y);
-                }
 
             }
         }

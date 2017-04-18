@@ -16,16 +16,17 @@ define(function(require){
             wallGroup.map = [ // 1  1  3  4  5  6  7  8  9
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 0
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
-                [1, 0, 1, 1, 1, 1, 1, 1, 0, 1], // 1
-                [1, 0, 1, 0, 0, 0, 0, 1, 0, 1], // 3
-                [1, 0, 1, 0, 1, 1, 0, 1, 0, 1], // 4
-                [1, 0, 1, 0, 1, 1, 0, 1, 0, 1], // 5
-                [1, 0, 1, 0, 0, 0, 0, 1, 0, 1], // 6
-                [1, 0, 1, 1, 1, 1, 1, 1, 0, 1], // 7
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 3
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 4
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 5
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 6
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 7
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 8
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1] // 9
 
             ];
+            wallGroup.walls = [];
             var mapW = wallGroup.map.length, mapH = wallGroup.map[0].length;
             for(var row = 0; row < mapW; row++){
                 for(var col = 0; col < mapH; col++)
@@ -36,6 +37,7 @@ define(function(require){
                         wallGroup.add(wall);
                         wall.translateX(row*WALL_WIDTH);
                         wall.translateY(col*WALL_WIDTH);
+                        wallGroup.walls.push(wall);
                     }
             }
             return wallGroup;
