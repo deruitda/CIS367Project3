@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4e94e4a-4bd2-4b68-a12f-b6de7e8b2156" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/js/vendor/jquery-1.7.2.min.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/main.js" afterPath="$PROJECT_DIR$/js/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/models/Walls.js" afterPath="$PROJECT_DIR$/js/models/Walls.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/textures/desert_eagle.json" afterPath="$PROJECT_DIR$/textures/desert_eagle.json" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -43,8 +39,8 @@
           <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/main.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="720">
-                  <caret line="211" column="36" lean-forward="true" selection-start-line="211" selection-start-column="36" selection-end-line="211" selection-end-column="36" />
+                <state relative-caret-position="640">
+                  <caret line="204" column="48" lean-forward="false" selection-start-line="204" selection-start-column="48" selection-end-line="204" selection-end-column="48" />
                   <folding />
                 </state>
               </provider>
@@ -357,12 +353,12 @@
       <workItem from="1492029467414" duration="304000" />
       <workItem from="1492030113065" duration="175000" />
       <workItem from="1492451841826" duration="10932000" />
-      <workItem from="1492532450034" duration="7692000" />
+      <workItem from="1492532450034" duration="8692000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="40732000" />
+    <option name="totallyTimeSpent" value="41732000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -779,8 +775,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="211" column="36" lean-forward="true" selection-start-line="211" selection-start-column="36" selection-end-line="211" selection-end-column="36" />
+        <state relative-caret-position="640">
+          <caret line="204" column="48" lean-forward="false" selection-start-line="204" selection-start-column="48" selection-end-line="204" selection-end-column="48" />
           <folding />
         </state>
       </provider>

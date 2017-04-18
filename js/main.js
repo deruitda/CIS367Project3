@@ -8,7 +8,7 @@ var targets;
 var WIDTH = window.innerWidth,
     HEIGHT = window.innerHeight,
     ASPECT = WIDTH / HEIGHT,
-    UNITSIZE = 200,
+    UNITSIZE = 250,
     WALLHEIGHT = UNITSIZE / 3,
     MOVESPEED = 300,
     LOOKSPEED = 0.075,
@@ -95,7 +95,7 @@ require({
 
         testWall = new Walls();
         testWall.translateY(100);
-        //scene.add(testWall);
+        scene.add(testWall);
         map = testWall.map;
         testWall.rotateX(-(Math.PI/2));
 
@@ -189,7 +189,7 @@ require({
 
 
     function createTargets(){
-        var numTargets = 15;
+        var numTargets = 30;
         var positions = [];
         for(var i = 0; i < numTargets; i++){
             var min = 0;
@@ -201,14 +201,8 @@ require({
         for(var i = 0; i < numTargets; i++){
             var target = new Target();
 
-            var XZmin = 100;
-            var XZMax = 5000;
-            var Ymin = 50;
-            var Ymax = 100;
-            // var x = Math.floor(Math.random() * (XZMax - XZmin)) + XZmin;
-            // var z = Math.floor(Math.random() * (XZMax - XZmin)) + XZmin;
-            // var y = Math.floor(Math.random() * (Ymax - Ymin)) + Ymin;
-            target.position.set(positions[i].x, positions[i].y, positions[i].z);
+            target.position.x = positions[i].x;
+            target.position.z = positions[i].z - UNITSIZE;
             target.position.y = 100;
             target.rotateX(Math.PI/2);
             scene.add(target);
