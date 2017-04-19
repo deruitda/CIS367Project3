@@ -19,7 +19,8 @@ var WIDTH = window.innerWidth,
     map;
 var mouse = { x: 0, y: 0 };
 var gun;
-var timeLeft = 30;
+var timeLeft = 5;
+var timerId;
 var elem = document.getElementById('timer');
 require({
     // baseUrl: 'js',
@@ -44,7 +45,7 @@ require({
         bullets  = [];
         scene.background = new THREE.Color(0x42adf4);
         window.addEventListener('resize', onResize, false);
-        document.getElementById("timerstart").onclick = startTimer();
+        document.getElementById("timerstart").onclick = startTimer;
         document.addEventListener( 'mousemove', onDocumentMouseMove, false );
         //window.addEventListener('keydown', onKeypress, false);
         const globalAxes = new THREE.AxisHelper(200);
@@ -52,7 +53,8 @@ require({
 
         camera = new THREE.PerspectiveCamera(60, ASPECT, 1, 10000); // FOV, aspect, near, far
         camera.position.y = 100;
-        camera.position.x = UNITSIZE * 5;
+        camera.position.x = UNITSIZE * 8;
+        camera.position.z = -(UNITSIZE * 10);
         scene.add(camera);
 
         // var objLoader = new THREE.ObjectLoader();
@@ -285,6 +287,7 @@ require({
         if (timeLeft == 0) {
             elem.innerHTML = timeLeft + 's';
             clearTimeout(timerId);
+            alert();
         } else {
             elem.innerHTML = timeLeft + 's';
             timeLeft--;
@@ -292,7 +295,15 @@ require({
     }
 
     function startTimer(){
-        setInterval(countdown, 1000);
+        timerId = setInterval(countdown, 1000);
+    }
+
+    function alert(){
+        if(window.confirm("Time's Up!\n Score: " + scoreCount) == true){
+            location.reload();
+        }else{
+            location.reload();
+        }
     }
 
 });
