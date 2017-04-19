@@ -5,6 +5,7 @@ var testWall, wallCF;
 var clock, controls;
 var bullets;
 var targets;
+var scoreCount = 0;
 var WIDTH = window.innerWidth,
     HEIGHT = window.innerHeight,
     ASPECT = WIDTH / HEIGHT,
@@ -18,6 +19,8 @@ var WIDTH = window.innerWidth,
     map;
 var mouse = { x: 0, y: 0 };
 var gun;
+var timeLeft = 30;
+var elem = document.getElementById('timer');
 require({
     // baseUrl: 'js',
     // three.js should have UMD support soon, but it currently does not
@@ -41,6 +44,7 @@ require({
         bullets  = [];
         scene.background = new THREE.Color(0x42adf4);
         window.addEventListener('resize', onResize, false);
+        document.getElementById("timerstart").onclick = startTimer();
         document.addEventListener( 'mousemove', onDocumentMouseMove, false );
         //window.addEventListener('keydown', onKeypress, false);
         const globalAxes = new THREE.AxisHelper(200);
@@ -243,10 +247,12 @@ require({
                         hit = true;
                     }
                     if (hit) {
+                        scoreCount += 1;
                         scene.remove(target);
                         targets.splice(t, 1);
                         bullets.splice(i, 1);
                         scene.remove(bullet);
+                        document.getElementById("Score").innerHTML = "" + scoreCount;
                         break;
                     }
                 }
@@ -273,6 +279,20 @@ require({
         var c = getMapSector(v);
         //return map[c.x][c.z] > 0;
         return 0;
+    }
+
+    function countdown() {
+        if (timeLeft == 0) {
+            elem.innerHTML = timeLeft + 's';
+            clearTimeout(timerId);
+        } else {
+            elem.innerHTML = timeLeft + 's';
+            timeLeft--;
+        }
+    }
+
+    function startTimer(){
+        setInterval(countdown, 1000);
     }
 
 });
