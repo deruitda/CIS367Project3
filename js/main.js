@@ -19,7 +19,7 @@ var WIDTH = window.innerWidth,
     map;
 var mouse = { x: 0, y: 0 };
 var gun;
-var timeLeft = 5;
+var timeLeft = 0;
 var timerId;
 var elem = document.getElementById('timer');
 require({
@@ -53,8 +53,8 @@ require({
 
         camera = new THREE.PerspectiveCamera(60, ASPECT, 1, 10000); // FOV, aspect, near, far
         camera.position.y = 100;
-        camera.position.x = UNITSIZE * 8;
-        camera.position.z = -(UNITSIZE * 10);
+        camera.position.x = (UNITSIZE * 4);
+        camera.position.z = -(UNITSIZE * 4);
         scene.add(camera);
 
         // var objLoader = new THREE.ObjectLoader();
@@ -284,13 +284,13 @@ require({
     }
 
     function countdown() {
-        if (timeLeft == 0) {
+        if (scoreCount == 30) {
             elem.innerHTML = timeLeft + 's';
             clearTimeout(timerId);
             alert();
         } else {
             elem.innerHTML = timeLeft + 's';
-            timeLeft--;
+            timeLeft++;
         }
     }
 
@@ -299,7 +299,7 @@ require({
     }
 
     function alert(){
-        if(window.confirm("Time's Up!\n Score: " + scoreCount) == true){
+        if(window.confirm("All Targets Hit!\n Time: " + timeLeft + "seconds") == true){
             location.reload();
         }else{
             location.reload();

@@ -5,8 +5,8 @@ define(function(require){
     var THREE = require('../vendor/three');
     class Walls{
         constructor(){
-            const WALL_HEIGHT = 500;
-            const WALL_WIDTH = 500;
+            const WALL_HEIGHT = 250;
+            const WALL_WIDTH = 250;
             const WALL_DEPTH = 200;
             const cobbleTex = new THREE.TextureLoader().load("textures/brick.jpg");
             cobbleTex.repeat.set(6,6);
