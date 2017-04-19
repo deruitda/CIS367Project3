@@ -195,7 +195,7 @@ require({
 
 
     function createTargets(){
-        var numTargets = 30;
+        var numTargets = 20;
         var positions = [];
         for(var i = 0; i < numTargets; i++){
             var min = 0;
@@ -284,7 +284,7 @@ require({
     }
 
     function countdown() {
-        if (scoreCount == 30) {
+        if (scoreCount == 20) {
             elem.innerHTML = timeLeft + 's';
             clearTimeout(timerId);
             alert();
