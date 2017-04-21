@@ -21,8 +21,11 @@ var mouse = { x: 0, y: 0 };
 var gun;
 var timeLeft = 0;
 var timerId;
+var shotTimerID;
 var elem = document.getElementById('timer');
 var audio = new Audio("Sounds/deagle.mp3");
+var deag;
+var Fire = false;
 require({
     // baseUrl: 'js',
     // three.js should have UMD support soon, but it currently does not
@@ -67,7 +70,7 @@ require({
         camera.position.z = -(UNITSIZE * 4);
         scene.add(camera);
 
-        const deag = new deagle();
+        deag = new deagle();
         scene.add(deag);
         camera.add(deag);
         deag.position.z -= 2;
@@ -144,7 +147,9 @@ require({
         $(document).click(function(e) {
             e.preventDefault;
             if (e.which === 1) { // Left click only
-                createBullet();
+                if(Fire == false){
+                    createBullet();
+                }
             }
         });
         document.body.appendChild( renderer.domElement );
@@ -202,6 +207,12 @@ require({
         audio.play();
         bullets.push(line);
         scene.add(line);
+        if(shotTimerID){
+            clearTimeout(shotTimerID);
+        }
+        Fire = true;
+        bulletTimer();
+        animateDeagle();
 
         return line;
     }
@@ -318,6 +329,14 @@ require({
         timerId = setInterval(countdown, 1000);
     }
 
+    function bulletTimer(){
+        shotTimerID = setInterval(toggleShot, 1000);
+    }
+
+    function toggleShot() {
+        Fire = false;
+    }
+
     function alert(){
         if(window.confirm("All Targets Hit!\n Time: " + timeLeft + " seconds") == true){
             location.reload();
@@ -330,6 +349,14 @@ require({
         if(e.keyCode == 32){
             controls.lookVertical = !controls.lookVertical;
         }
+    }
+
+    function animateDeagle() {
+        deag.rotateX(Math.PI/4);
+        window.setTimeout(rotateDeagDown, 150);
+    }
+    function rotateDeagDown() {
+        deag.rotateX(-(Math.PI/4))
     }
 
 });
