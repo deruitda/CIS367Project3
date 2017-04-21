@@ -9,7 +9,7 @@ var scoreCount = 0;
 var WIDTH = window.innerWidth,
     HEIGHT = window.innerHeight,
     ASPECT = WIDTH / HEIGHT,
-    UNITSIZE = 250,
+    UNITSIZE = 200,
     WALLHEIGHT = UNITSIZE / 3,
     MOVESPEED = 300,
     LOOKSPEED = 0.075,
@@ -32,10 +32,19 @@ require({
 }, [
     'vendor/three', 'models/Target', 'models/Walls', 'vendor/FirstPersonControls'
 ], function(THREE, Target, Walls, FPSControls) {
-
-
-    init();
-    animate();
+    $(document).ready(function() {
+        $('body').append('<div id="intro">Click to start</div>');
+        $('#intro').css({width: WIDTH, height: HEIGHT}).one('click', function (e) {
+            e.preventDefault();
+            $(this).fadeOut();
+            startTimer();
+            init();
+            // setInterval(drawRadar, 1000);
+            animate();
+        });
+    });
+    // init();
+        // animate();
 
 
     function init() {
@@ -45,8 +54,8 @@ require({
         bullets  = [];
         scene.background = new THREE.Color(0x42adf4);
         window.addEventListener('resize', onResize, false);
-        document.getElementById("timerstart").onclick = startTimer;
         document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+        document.onkeydown = jump;
         //window.addEventListener('keydown', onKeypress, false);
         const globalAxes = new THREE.AxisHelper(200);
         scene.add(globalAxes);
@@ -189,8 +198,8 @@ require({
 
     function onDocumentMouseMove(e) {
         e.preventDefault();
-        mouse.x = (e.clientX / WIDTH) * 2 - 1;
-        mouse.y = - (e.clientY / HEIGHT) * 2 + 1;
+        mouse.x = (e.clientX / WIDTH)* 2 - 1;
+        mouse.y = - (e.clientY / HEIGHT)* 2 + 1;
     }
 
 
@@ -234,7 +243,7 @@ require({
 
         // Update bullets. Walk backwards through the list so we can remove items.
         if(bullets.length != undefined){
-            console.log(camera.position);
+            //console.log(camera.position);
             for (var i = bullets.length-1; i >= 0; i--) {
                 var bullet = bullets[i];
                 var bulletPos = bullet.position;
@@ -250,11 +259,12 @@ require({
                     }
                     if (hit) {
                         scoreCount += 1;
-                        scene.remove(target);
+                       //scene.remove(target);
                         targets.splice(t, 1);
                         bullets.splice(i, 1);
                         scene.remove(bullet);
                         document.getElementById("Score").innerHTML = "" + scoreCount;
+                        target.hit();
                         break;
                     }
                 }
@@ -303,6 +313,12 @@ require({
             location.reload();
         }else{
             location.reload();
+        }
+    }
+
+    function jump(e){
+        if(e.keyCode == 32){
+            controls.lookVertical = !controls.lookVertical;
         }
     }
 

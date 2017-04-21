@@ -11,10 +11,24 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ThreeJS Project</title>
+    <style>
+        #intro {
+        background-color: #000000;
+        color: #FFFFFF;
+        cursor: pointer;
+        font-size: 32px;
+        opacity: 0.7;
+        padding: 100px;
+        text-align: center;
+        z-index: 1001;
+    }
+    #body{
+        cursor: crosshair;
+    }
+    </style>
 </head>
-<body>
+<body id="body">
 <div class="Scoreboard" style="black: white; margin: 0; position: absolute; z-index: 1; width: 100%;">
-    <div id="Start" style="float: left; font-size: 40px; width: 33%;"><button id="timerstart" style="font-size: 40px;"><b>Start</b></button></div>
     <div id="Score" style="float: left; font-size: 40px; width: 33%; text-align: center;"><b>0</b></div>
     <div id="timer" style="float: left; font-size: 40px; width: 33%; text-align: right;"><b></b></div>
 </div>
