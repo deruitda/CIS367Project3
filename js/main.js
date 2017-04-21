@@ -22,6 +22,7 @@ var gun;
 var timeLeft = 0;
 var timerId;
 var elem = document.getElementById('timer');
+var audio = new Audio("Sounds/deagle.mp3");
 require({
     // baseUrl: 'js',
     // three.js should have UMD support soon, but it currently does not
@@ -30,8 +31,8 @@ require({
     //     '/bower_components/threex.windowresize/threex.windowresize': { exports: 'THREEx' }
     // }
 }, [
-    'vendor/three', 'models/Target', 'models/Walls', 'vendor/FirstPersonControls'
-], function(THREE, Target, Walls, FPSControls) {
+    'vendor/three', 'models/Target', 'models/Walls', 'models/deagle', 'vendor/FirstPersonControls'
+], function(THREE, Target, Walls, deagle, FPSControls) {
     $(document).ready(function() {
         $('body').append('<div id="intro">Click to start</div>');
         $('#intro').css({width: WIDTH, height: HEIGHT}).one('click', function (e) {
@@ -65,6 +66,13 @@ require({
         camera.position.x = (UNITSIZE * 4);
         camera.position.z = -(UNITSIZE * 4);
         scene.add(camera);
+
+        const deag = new deagle();
+        scene.add(deag);
+        camera.add(deag);
+        deag.position.z -= 2;
+        deag.position.x += 0;
+        deag.position.y -= 1;
 
         // var objLoader = new THREE.ObjectLoader();
         // objLoader.load('Textures/desert_eagle.json', function(object){
@@ -167,6 +175,8 @@ require({
     var lineMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
     var lineGeo = new THREE.BoxGeometry(3, 3, 3, 3, 3, 3);
     function createBullet(obj) {
+        audio.pause();
+        audio.currentTime = 0;
         if (obj === undefined) {
             obj = camera;
         }
@@ -189,7 +199,7 @@ require({
             );
         }
         line.owner = obj;
-
+        audio.play();
         bullets.push(line);
         scene.add(line);
 
@@ -309,7 +319,7 @@ require({
     }
 
     function alert(){
-        if(window.confirm("All Targets Hit!\n Time: " + timeLeft + "seconds") == true){
+        if(window.confirm("All Targets Hit!\n Time: " + timeLeft + " seconds") == true){
             location.reload();
         }else{
             location.reload();
